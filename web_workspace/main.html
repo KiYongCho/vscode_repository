@@ -1,0 +1,580 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NAVER</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Malgun Gothic", "맑은 고딕", "Apple SD Gothic Neo", sans-serif;
+            background: #f5f6f7;
+            color: #222;
+            font-size: 14px;
+        }
+        a { color: inherit; text-decoration: none; }
+        a:hover { text-decoration: underline; }
+        ul { list-style: none; }
+
+        :root {
+            --green: #03c75a;
+            --line: #e3e5e8;
+            --gray: #767678;
+        }
+
+        /* ===== 상단 바 ===== */
+        .top-bar {
+            background: #fff;
+            border-bottom: 1px solid var(--line);
+        }
+        .top-bar .inner {
+            max-width: 1130px;
+            margin: 0 auto;
+            height: 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 15px;
+            font-size: 12px;
+            color: var(--gray);
+        }
+        .top-bar .links a { margin-right: 14px; }
+        .top-bar .links a:first-child { color: var(--green); font-weight: bold; }
+
+        /* ===== 헤더 / 검색 ===== */
+        header {
+            background: #fff;
+            padding: 40px 0 26px;
+        }
+        .search-area {
+            max-width: 1130px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 24px;
+        }
+        .logo {
+            font-size: 40px;
+            font-weight: 900;
+            color: var(--green);
+            letter-spacing: -1px;
+            font-family: Arial, sans-serif;
+        }
+        .logo:hover { text-decoration: none; }
+        .search-box {
+            width: 640px;
+            height: 58px;
+            border: 2px solid var(--green);
+            border-radius: 30px;
+            display: flex;
+            align-items: center;
+            padding: 0 8px 0 24px;
+            box-shadow: 0 2px 8px rgba(3, 199, 90, .15);
+        }
+        .search-box input {
+            flex: 1;
+            border: none;
+            outline: none;
+            font-size: 18px;
+        }
+        .search-box .kbd {
+            color: #aaa;
+            font-size: 18px;
+            margin: 0 12px;
+            cursor: pointer;
+        }
+        .search-box button {
+            width: 46px;
+            height: 46px;
+            border: none;
+            border-radius: 50%;
+            background: var(--green);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* ===== 바로가기 아이콘 ===== */
+        .shortcuts {
+            background: #fff;
+            padding-bottom: 24px;
+            border-bottom: 1px solid var(--line);
+        }
+        .shortcuts ul {
+            max-width: 900px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: center;
+            gap: 22px;
+        }
+        .shortcuts li a {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 6px;
+            font-size: 13px;
+        }
+        .shortcuts li a:hover { text-decoration: none; }
+        .shortcuts .icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 16px;
+            border: 1px solid var(--line);
+            background: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+            transition: transform .15s;
+        }
+        .shortcuts li a:hover .icon { transform: translateY(-3px); }
+
+        /* ===== 본문 레이아웃 ===== */
+        .container {
+            max-width: 1130px;
+            margin: 24px auto;
+            display: flex;
+            gap: 24px;
+            padding: 0 15px;
+        }
+        .main-col { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 20px; }
+        .side-col { width: 350px; display: flex; flex-direction: column; gap: 20px; }
+
+        .card {
+            background: #fff;
+            border: 1px solid var(--line);
+            border-radius: 12px;
+            padding: 20px;
+        }
+        .card-title {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 14px;
+        }
+        .card-title h2 { font-size: 17px; }
+        .card-title .more { font-size: 12px; color: var(--gray); }
+
+        /* 탭 */
+        .tabs { display: flex; gap: 4px; margin-bottom: 14px; flex-wrap: wrap; }
+        .tabs button {
+            border: 1px solid var(--line);
+            background: #fff;
+            border-radius: 16px;
+            padding: 6px 14px;
+            font-size: 13px;
+            cursor: pointer;
+        }
+        .tabs button.active {
+            background: #222;
+            color: #fff;
+            border-color: #222;
+        }
+
+        /* 뉴스스탠드 */
+        .press-grid {
+            display: grid;
+            grid-template-columns: repeat(6, 1fr);
+            border-top: 1px solid var(--line);
+            border-left: 1px solid var(--line);
+        }
+        .press-grid a {
+            height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-right: 1px solid var(--line);
+            border-bottom: 1px solid var(--line);
+            font-weight: bold;
+            font-size: 13px;
+            color: #444;
+        }
+        .press-grid a:hover { background: #f8f9fa; text-decoration: none; }
+
+        .headline {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px 0;
+            border-bottom: 1px solid #f0f0f0;
+            margin-bottom: 14px;
+        }
+        .headline .badge {
+            background: var(--green);
+            color: #fff;
+            font-size: 11px;
+            padding: 2px 6px;
+            border-radius: 4px;
+        }
+
+        /* 콘텐츠 피드 */
+        .feed {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 18px;
+        }
+        .feed-item .thumb {
+            height: 120px;
+            border-radius: 8px;
+            margin-bottom: 8px;
+        }
+        .feed-item .cat { font-size: 12px; color: var(--green); margin-bottom: 4px; }
+        .feed-item .tit {
+            font-size: 14px;
+            line-height: 1.4;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+        .feed-item .src { font-size: 12px; color: var(--gray); margin-top: 6px; }
+
+        /* 로그인 박스 */
+        .login-box p {
+            font-size: 13px;
+            color: #555;
+            margin-bottom: 12px;
+            line-height: 1.5;
+        }
+        .login-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            width: 100%;
+            height: 52px;
+            border: none;
+            border-radius: 8px;
+            background: var(--green);
+            color: #fff;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        .login-btn b { font-family: Arial, sans-serif; font-weight: 900; }
+        .login-sub {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 12px;
+            font-size: 12px;
+            color: var(--gray);
+        }
+
+        /* 날씨 */
+        .weather {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+        .weather .now { font-size: 36px; font-weight: bold; }
+        .weather .desc { font-size: 13px; color: #555; line-height: 1.6; }
+        .weather-week {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 16px;
+            padding-top: 14px;
+            border-top: 1px solid #f0f0f0;
+            text-align: center;
+            font-size: 12px;
+        }
+        .weather-week div span { display: block; margin: 4px 0; font-size: 18px; }
+
+        /* 증시 */
+        .stock li {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            border-bottom: 1px solid #f0f0f0;
+        }
+        .stock li:last-child { border-bottom: none; }
+        .up { color: #e8333a; }
+        .down { color: #1a6fe8; }
+
+        /* 쇼핑 */
+        .shop-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+        }
+        .shop-grid .thumb { height: 100px; border-radius: 8px; margin-bottom: 6px; }
+        .shop-grid .name { font-size: 13px; }
+        .shop-grid .price { font-weight: bold; margin-top: 2px; }
+        .shop-grid .price em { color: #e8333a; font-style: normal; margin-right: 4px; }
+
+        /* ===== 푸터 ===== */
+        footer {
+            background: #fff;
+            border-top: 1px solid var(--line);
+            padding: 30px 0;
+            text-align: center;
+            font-size: 12px;
+            color: var(--gray);
+            margin-top: 40px;
+        }
+        footer .links a { margin: 0 8px; }
+        footer .copy { margin-top: 12px; }
+        footer .copy b { color: var(--green); font-family: Arial, sans-serif; }
+
+        @media (max-width: 960px) {
+            .container { flex-direction: column; }
+            .side-col { width: 100%; }
+            .search-box { width: 90%; }
+            .search-area { flex-direction: column; }
+            .press-grid { grid-template-columns: repeat(3, 1fr); }
+            .feed { grid-template-columns: repeat(2, 1fr); }
+            .shortcuts ul { flex-wrap: wrap; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- 상단 바 -->
+    <div class="top-bar">
+        <div class="inner">
+            <div class="links">
+                <a href="#">시작페이지로 설정</a>
+                <a href="#">쥬니어네이버</a>
+                <a href="#">해피빈</a>
+            </div>
+            <div id="today"></div>
+        </div>
+    </div>
+
+    <!-- 헤더 / 검색 -->
+    <header>
+        <div class="search-area">
+            <a href="#" class="logo">NAVER</a>
+            <form class="search-box" onsubmit="return doSearch(event)">
+                <input type="text" id="query" placeholder="검색어를 입력해 주세요." autocomplete="off">
+                <span class="kbd" title="한글 입력기">⌨</span>
+                <button type="submit" aria-label="검색">
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.8" stroke-linecap="round">
+                        <circle cx="10.5" cy="10.5" r="6.5"/>
+                        <line x1="15.5" y1="15.5" x2="21" y2="21"/>
+                    </svg>
+                </button>
+            </form>
+        </div>
+    </header>
+
+    <!-- 바로가기 -->
+    <nav class="shortcuts">
+        <ul>
+            <li><a href="#"><span class="icon">✉️</span>메일</a></li>
+            <li><a href="#"><span class="icon">☕</span>카페</a></li>
+            <li><a href="#"><span class="icon">📝</span>블로그</a></li>
+            <li><a href="#"><span class="icon">🛍️</span>쇼핑</a></li>
+            <li><a href="#"><span class="icon">📰</span>뉴스</a></li>
+            <li><a href="#"><span class="icon">📈</span>증권</a></li>
+            <li><a href="#"><span class="icon">🏠</span>부동산</a></li>
+            <li><a href="#"><span class="icon">🗺️</span>지도</a></li>
+            <li><a href="#"><span class="icon">📚</span>웹툰</a></li>
+            <li><a href="#"><span class="icon">⚽</span>스포츠</a></li>
+        </ul>
+    </nav>
+
+    <!-- 본문 -->
+    <div class="container">
+        <main class="main-col">
+
+            <!-- 뉴스스탠드 -->
+            <section class="card">
+                <div class="card-title">
+                    <h2>뉴스스탠드</h2>
+                    <a href="#" class="more">구독설정 ›</a>
+                </div>
+                <div class="headline">
+                    <span class="badge">속보</span>
+                    <a href="#">수도권 첫눈 예보… 주말 기온 영하권으로 뚝 떨어져</a>
+                </div>
+                <div class="press-grid">
+                    <a href="#">연합뉴스</a><a href="#">KBS</a><a href="#">MBC</a>
+                    <a href="#">SBS</a><a href="#">JTBC</a><a href="#">YTN</a>
+                    <a href="#">한겨레</a><a href="#">경향신문</a><a href="#">동아일보</a>
+                    <a href="#">조선일보</a><a href="#">중앙일보</a><a href="#">한국일보</a>
+                    <a href="#">매일경제</a><a href="#">한국경제</a><a href="#">서울신문</a>
+                    <a href="#">국민일보</a><a href="#">세계일보</a><a href="#">전자신문</a>
+                </div>
+            </section>
+
+            <!-- 콘텐츠 피드 -->
+            <section class="card">
+                <div class="card-title">
+                    <h2>오늘 읽을만한 글</h2>
+                    <a href="#" class="more">주제설정 ›</a>
+                </div>
+                <div class="tabs" id="feedTabs">
+                    <button class="active">전체</button>
+                    <button>여행</button>
+                    <button>푸드</button>
+                    <button>IT·테크</button>
+                    <button>리빙</button>
+                    <button>경제</button>
+                </div>
+                <div class="feed">
+                    <a href="#" class="feed-item">
+                        <div class="thumb" style="background:linear-gradient(135deg,#a8e6cf,#3bb78f)"></div>
+                        <div class="cat">여행</div>
+                        <div class="tit">겨울에 꼭 가봐야 할 국내 온천 여행지 BEST 7</div>
+                        <div class="src">여행하는 블로거</div>
+                    </a>
+                    <a href="#" class="feed-item">
+                        <div class="thumb" style="background:linear-gradient(135deg,#ffd3a5,#fd6585)"></div>
+                        <div class="cat">푸드</div>
+                        <div class="tit">10분 만에 완성하는 초간단 집밥 레시피 모음</div>
+                        <div class="src">오늘의 요리</div>
+                    </a>
+                    <a href="#" class="feed-item">
+                        <div class="thumb" style="background:linear-gradient(135deg,#a1c4fd,#6a5af9)"></div>
+                        <div class="cat">IT·테크</div>
+                        <div class="tit">파이썬으로 시작하는 웹 크롤링, 입문자를 위한 가이드</div>
+                        <div class="src">코딩하는 개발자</div>
+                    </a>
+                    <a href="#" class="feed-item">
+                        <div class="thumb" style="background:linear-gradient(135deg,#fbc2eb,#a6c1ee)"></div>
+                        <div class="cat">리빙</div>
+                        <div class="tit">좁은 원룸도 넓어 보이게 만드는 인테리어 팁</div>
+                        <div class="src">살림 노트</div>
+                    </a>
+                    <a href="#" class="feed-item">
+                        <div class="thumb" style="background:linear-gradient(135deg,#fdfcfb,#e2d1c3)"></div>
+                        <div class="cat">경제</div>
+                        <div class="tit">사회초년생이 알아야 할 연말정산 체크리스트</div>
+                        <div class="src">머니 리포트</div>
+                    </a>
+                    <a href="#" class="feed-item">
+                        <div class="thumb" style="background:linear-gradient(135deg,#84fab0,#8fd3f4)"></div>
+                        <div class="cat">여행</div>
+                        <div class="tit">연말 연휴에 떠나기 좋은 가까운 해외 여행지</div>
+                        <div class="src">세계일주 일기</div>
+                    </a>
+                </div>
+            </section>
+        </main>
+
+        <aside class="side-col">
+
+            <!-- 로그인 -->
+            <section class="card login-box">
+                <p>네이버를 더 안전하고 편리하게 이용하세요</p>
+                <button class="login-btn"><b>NAVER</b> 로그인</button>
+                <div class="login-sub">
+                    <a href="#">아이디 찾기 · 비밀번호 찾기</a>
+                    <a href="#">회원가입</a>
+                </div>
+            </section>
+
+            <!-- 날씨 -->
+            <section class="card">
+                <div class="card-title">
+                    <h2>날씨</h2>
+                    <a href="#" class="more">서울시 중구 ›</a>
+                </div>
+                <div class="weather">
+                    <div style="font-size:48px">⛅</div>
+                    <div>
+                        <div class="now">3°</div>
+                    </div>
+                    <div class="desc">
+                        구름조금 · 어제보다 2° 낮아요<br>
+                        미세먼지 <b style="color:var(--green)">좋음</b> · 습도 45%
+                    </div>
+                </div>
+                <div class="weather-week">
+                    <div>목<span>⛅</span>-2° / 5°</div>
+                    <div>금<span>☀️</span>-4° / 3°</div>
+                    <div>토<span>❄️</span>-6° / 1°</div>
+                    <div>일<span>☁️</span>-3° / 4°</div>
+                    <div>월<span>☀️</span>-1° / 6°</div>
+                </div>
+            </section>
+
+            <!-- 증시 -->
+            <section class="card">
+                <div class="card-title">
+                    <h2>증시</h2>
+                    <a href="#" class="more">더보기 ›</a>
+                </div>
+                <ul class="stock">
+                    <li><span>코스피</span><span class="up">2,712.45 ▲ 18.32</span></li>
+                    <li><span>코스닥</span><span class="down">842.17 ▼ 3.05</span></li>
+                    <li><span>원/달러</span><span class="up">1,382.50 ▲ 4.20</span></li>
+                    <li><span>나스닥</span><span class="up">19,214.88 ▲ 102.4</span></li>
+                </ul>
+            </section>
+
+            <!-- 쇼핑 -->
+            <section class="card">
+                <div class="card-title">
+                    <h2>쇼핑 추천</h2>
+                    <a href="#" class="more">더보기 ›</a>
+                </div>
+                <div class="shop-grid">
+                    <a href="#">
+                        <div class="thumb" style="background:linear-gradient(135deg,#e0eafc,#cfdef3)"></div>
+                        <div class="name">겨울 경량 패딩 조끼</div>
+                        <div class="price"><em>32%</em>29,900원</div>
+                    </a>
+                    <a href="#">
+                        <div class="thumb" style="background:linear-gradient(135deg,#fff1eb,#ace0f9)"></div>
+                        <div class="name">무선 블루투스 이어폰</div>
+                        <div class="price"><em>18%</em>49,000원</div>
+                    </a>
+                    <a href="#">
+                        <div class="thumb" style="background:linear-gradient(135deg,#f6d365,#fda085)"></div>
+                        <div class="name">핸드드립 원두 1kg</div>
+                        <div class="price"><em>25%</em>21,500원</div>
+                    </a>
+                    <a href="#">
+                        <div class="thumb" style="background:linear-gradient(135deg,#d4fc79,#96e6a1)"></div>
+                        <div class="name">극세사 전기요</div>
+                        <div class="price"><em>40%</em>39,800원</div>
+                    </a>
+                </div>
+            </section>
+        </aside>
+    </div>
+
+    <!-- 푸터 -->
+    <footer>
+        <div class="links">
+            <a href="#">회사소개</a>|
+            <a href="#">인재채용</a>|
+            <a href="#">제휴제안</a>|
+            <a href="#">이용약관</a>|
+            <a href="#"><b>개인정보처리방침</b></a>|
+            <a href="#">고객센터</a>
+        </div>
+        <p class="copy">© <b>NAVER</b> Corp. (연습용 클론 페이지)</p>
+    </footer>
+
+    <script>
+        // 오늘 날짜 표시
+        const d = new Date();
+        const days = ['일', '월', '화', '수', '목', '금', '토'];
+        document.getElementById('today').textContent =
+            `${d.getFullYear()}.${d.getMonth() + 1}.${d.getDate()}. (${days[d.getDay()]})`;
+
+        // 검색: 실제 네이버 검색으로 이동
+        function doSearch(e) {
+            e.preventDefault();
+            const q = document.getElementById('query').value.trim();
+            if (q) {
+                window.open('https://search.naver.com/search.naver?query=' + encodeURIComponent(q), '_blank');
+            }
+            return false;
+        }
+
+        // 탭 전환
+        document.querySelectorAll('#feedTabs button').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('#feedTabs button').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+            });
+        });
+    </script>
+</body>
+</html>
